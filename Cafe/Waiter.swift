@@ -6,31 +6,39 @@ typealias ResultHandler<T> = (Result<T, Error>) -> Void
 final class Waiter {
     var order = Order()
 
-    func getSmoothies(_ handler: @escaping ResultHandler<[Smoothie]>) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            handler(.success(.all))
+    func smoothies() async throws -> [Smoothie] {
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                continuation.resume(returning: .all)
+            }
         }
     }
 
-    func getCurrentOrder(_ handler: @escaping ResultHandler<Order>) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [order] in
-            handler(.success(order))
+    func currentOrder() async throws -> Order {
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [order] in
+                continuation.resume(returning: order)
+            }
         }
     }
 
-    func addSmoothieToOrderAsync(_ smoothie: Smoothie, handler: @escaping ResultHandler<Order>) {
+    func addSmoothieToOrder(_ smoothie: Smoothie) async throws -> Order {
         order.addSmoothie(smoothie)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [order] in
-            handler(.success(order))
+        return try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [order] in
+                continuation.resume(returning: order)
+            }
         }
     }
 
-    func removeSmoothieFromOrderAsync(_ smoothie: Smoothie, handler: @escaping ResultHandler<Order>) {
+    func removeSmoothieFromOrder(_ smoothie: Smoothie) async throws -> Order {
         order.removeSmoothie(smoothie)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [order] in
-            handler(.success(order))
+        return try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [order] in
+                continuation.resume(returning: order)
+            }
         }
     }
 }

@@ -15,42 +15,34 @@ final class MenuViewModel: ObservableObject {
         self.order = order
     }
 
-    func load() {
+    func load() async {
         showError = false
 
-        waiter.getSmoothies { [waiter] smoothiesResult in
-            waiter.getCurrentOrder { [weak self] orderResult in
-                do {
-                    self?.smoothies = try smoothiesResult.get()
-                    self?.order = try orderResult.get()
-                } catch {
-                    self?.showError = true
-                }
-            }
+        do {
+            smoothies = try await waiter.smoothies()
+            order = try await waiter.currentOrder()
+        } catch {
+            showError = true
         }
     }
 
-    func addToCart(_ smoothie: Smoothie) {
+    func addToCart(_ smoothie: Smoothie) async {
         order?.addSmoothie(smoothie)
 
-        waiter.addSmoothieToOrderAsync(smoothie) { [weak self] orderResult in
-            do {
-                self?.order = try orderResult.get()
-            } catch {
-                self?.showError = true
-            }
+        do {
+            order = try await waiter.addSmoothieToOrder(smoothie)
+        } catch {
+            showError = true
         }
     }
 
-    func removeFromCart(_ smoothie: Smoothie) {
+    func removeFromCart(_ smoothie: Smoothie) async {
         order?.removeSmoothie(smoothie)
 
-        waiter.removeSmoothieFromOrderAsync(smoothie) { [weak self] orderResult in
-            do {
-                self?.order = try orderResult.get()
-            } catch {
-                self?.showError = true
-            }
+        do {
+            order = try await waiter.removeSmoothieFromOrder(smoothie)
+        } catch {
+            showError = true
         }
     }
 }
@@ -66,24 +58,32 @@ struct MenuView: View {
                     smoothies: smoothies,
                     quantity: { order.quantity[$0.id, default: 0] },
                     addToCart: { smoothie in
-                        viewModel.addToCart(smoothie)
+                        Task {
+                            await viewModel.addToCart(smoothie)
+                        }
                     },
                     removeFromCart: { smoothie in
-                        viewModel.removeFromCart(smoothie)
+                        Task {
+                            await viewModel.removeFromCart(smoothie)
+                        }
                     }
                 )
             } else {
                 ProgressView("Loading")
                     .progressViewStyle(.circular)
                     .onAppear {
-                        viewModel.load()
+                        Task {
+                            await viewModel.load()
+                        }
                     }
             }
         }
         .navigationTitle("Menu")
         .alert("Something went wrong", isPresented: $viewModel.showError) {
             Button {
-                viewModel.load()
+                Task {
+                    await viewModel.load()
+                }
             } label: {
                 Text("Try again")
             }
