@@ -17,8 +17,6 @@ final class MenuViewModel: ObservableObject {
 
     func load() {
         showError = false
-        smoothies = nil
-        order = nil
 
         waiter.getSmoothies { [waiter] smoothiesResult in
             waiter.getCurrentOrder { [weak self] orderResult in
