@@ -3,7 +3,7 @@ import Foundation
 typealias ResultHandler<T> = (Result<T, Error>) -> Void
 
 // Mocked implementation.
-final class Waiter {
+actor Waiter {
     var order = Order()
 
     func smoothies() async throws -> [Smoothie] {
@@ -25,20 +25,20 @@ final class Waiter {
     func addSmoothieToOrder(_ smoothie: Smoothie) async throws -> Order {
         order.addSmoothie(smoothie)
         
-        return try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [order] in
-                continuation.resume(returning: order)
-            }
-        }
+        order = try await updateOrder(order)
+
+        return order
     }
 
     func removeSmoothieFromOrder(_ smoothie: Smoothie) async throws -> Order {
         order.removeSmoothie(smoothie)
         
-        return try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [order] in
-                continuation.resume(returning: order)
-            }
-        }
+        order = try await updateOrder(order)
+
+        return order
     }
+}
+
+private func updateOrder(_ order: Order) async throws -> Order {
+    order
 }

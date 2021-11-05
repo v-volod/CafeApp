@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 final class MenuViewModel: ObservableObject {
     let waiter = Waiter()
 
