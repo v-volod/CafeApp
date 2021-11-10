@@ -48,8 +48,14 @@ extension Array where Element == Smoothie {
 import SwiftUI
 
 extension Smoothie {
-    var image: Image {
-        Image("\(id.value)", label: Text(title))
-            .renderingMode(.original)
+    func image() async -> Image {
+        guard let image = UIImage(named: "\(id.value)"),
+              let thumbnail = await image.byPreparingThumbnail(ofSize: CGSize(width: 20, height: 20))
+        else {
+            return Image("\(id.value)", label: Text(title))
+                .renderingMode(.original)
+        }
+
+        return Image(uiImage: thumbnail)
     }
 }

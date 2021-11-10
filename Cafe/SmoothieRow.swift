@@ -6,6 +6,8 @@ struct SmoothieRow: View {
     let addToCart: () -> Void
     let removeFromCart: () -> Void
 
+    @State var image: Image?
+
     init(
         smoothie: Smoothie,
         quantity: UInt,
@@ -21,7 +23,7 @@ struct SmoothieRow: View {
     var body: some View {
         HStack {
             let imageClipShape = RoundedRectangle(cornerRadius: 10, style: .continuous)
-            smoothie.image
+            image?
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 60, height: 60)
@@ -45,6 +47,9 @@ struct SmoothieRow: View {
                     onDecrement: removeFromCart
                 )
             }
+        }
+        .task {
+            image = await smoothie.image()
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 16)
