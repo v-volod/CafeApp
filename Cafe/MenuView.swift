@@ -43,15 +43,13 @@ final class MenuViewModel: ObservableObject {
         self.order = order
     }
 
-    func load() {
+    func load() async {
         showError = false
 
-        api.getSmoothies { [weak self] smoothiesResult in
-            do {
-                self?.smoothies = try smoothiesResult.get()
-            } catch {
-                self?.showError = true
-            }
+        do {
+            smoothies = try await api.getSmoothies()
+        } catch {
+            showError = true
         }
     }
 
@@ -86,15 +84,17 @@ struct MenuView: View {
             } else {
                 ProgressView("Loading")
                     .progressViewStyle(.circular)
-                    .onAppear {
-                        viewModel.load()
+                    .task {
+                        await viewModel.load()
                     }
             }
         }
         .navigationTitle("Menu")
         .alert("Something went wrong", isPresented: $viewModel.showError) {
             Button {
-                viewModel.load()
+                Task {
+                    await viewModel.load()
+                }
             } label: {
                 Text("Try again")
             }
