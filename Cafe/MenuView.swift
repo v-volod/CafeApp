@@ -1,16 +1,44 @@
 import SwiftUI
 
+// MARK: - Order -
+
+final class Order {
+    var quantity: [Smoothie.Id: UInt] = [:]
+
+    init(quantity: [Smoothie.Id: UInt] = [:]) {
+        self.quantity = quantity
+    }
+
+    func addSmoothie(_ smoothie: Smoothie) {
+        quantity[smoothie.id] = quantity[smoothie.id, default: 0] + 1
+    }
+
+    func removeSmoothie(_ smoothie: Smoothie) {
+        let quantity = quantity[smoothie.id, default: 0]
+
+        guard quantity > 0 else {
+            return
+        }
+
+        self.quantity[smoothie.id] = quantity - 1
+    }
+}
+
+// MARK: - ViewModel -
+
 final class MenuViewModel: ObservableObject {
-    let waiter = Waiter()
+    let api: MenuApi
+    let order: Order
 
     @Published var smoothies: [Smoothie]?
-    @Published var order: Order?
     @Published var showError = false
 
     init(
+        api: MenuApi = /* HIDE IN PRESENTATION */ provideMenuApi(),
         smoothies: [Smoothie]? = nil,
-        order: Order? = nil
+        order: Order = .init()
     ) {
+        self.api = api
         self.smoothies = smoothies
         self.order = order
     }
@@ -18,42 +46,29 @@ final class MenuViewModel: ObservableObject {
     func load() {
         showError = false
 
-        waiter.getSmoothies { [waiter] smoothiesResult in
-            waiter.getCurrentOrder { [weak self] orderResult in
-                do {
-                    self?.smoothies = try smoothiesResult.get()
-                    self?.order = try orderResult.get()
-                } catch {
-                    self?.showError = true
-                }
-            }
-        }
-    }
-
-    func addToCart(_ smoothie: Smoothie) {
-        order?.addSmoothie(smoothie)
-
-        waiter.addSmoothieToOrderAsync(smoothie) { [weak self] orderResult in
+        api.getSmoothies { [weak self] smoothiesResult in
             do {
-                self?.order = try orderResult.get()
+                self?.smoothies = try smoothiesResult.get()
             } catch {
                 self?.showError = true
             }
         }
     }
 
-    func removeFromCart(_ smoothie: Smoothie) {
-        order?.removeSmoothie(smoothie)
+    func addToCartTapped(_ smoothie: Smoothie) {
+        order.addSmoothie(smoothie)
 
-        waiter.removeSmoothieFromOrderAsync(smoothie) { [weak self] orderResult in
-            do {
-                self?.order = try orderResult.get()
-            } catch {
-                self?.showError = true
-            }
-        }
+        objectWillChange.send()
+    }
+
+    func removeFromCartTapped(_ smoothie: Smoothie) {
+        order.removeSmoothie(smoothie)
+
+        objectWillChange.send()
     }
 }
+
+// MARK: - View -
 
 struct MenuView: View {
     @StateObject var viewModel = MenuViewModel()
@@ -61,16 +76,12 @@ struct MenuView: View {
 
     var body: some View {
         Group {
-            if let smoothies = viewModel.smoothies, let order = viewModel.order {
+            if let smoothies = viewModel.smoothies {
                 SmoothieList(
                     smoothies: smoothies,
-                    quantity: { order.quantity[$0.id, default: 0] },
-                    addToCart: { smoothie in
-                        viewModel.addToCart(smoothie)
-                    },
-                    removeFromCart: { smoothie in
-                        viewModel.removeFromCart(smoothie)
-                    }
+                    quantity: { viewModel.order.quantity[$0.id, default: 0] },
+                    addToCart: viewModel.addToCartTapped,
+                    removeFromCart: viewModel.removeFromCartTapped
                 )
             } else {
                 ProgressView("Loading")

@@ -14,8 +14,7 @@
 		2DDBAC912735C54400A19ABA /* SmoothieList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBAC902735C54400A19ABA /* SmoothieList.swift */; };
 		2DDBAC932735C58600A19ABA /* SmoothieRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBAC922735C58600A19ABA /* SmoothieRow.swift */; };
 		2DDBAC952735CBEA00A19ABA /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBAC942735CBEA00A19ABA /* MenuView.swift */; };
-		2DDBAC972735DBC400A19ABA /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBAC962735DBC400A19ABA /* Order.swift */; };
-		2DDBAC992735E46800A19ABA /* Waiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBAC982735E46800A19ABA /* Waiter.swift */; };
+		2DDBAC992735E46800A19ABA /* MenuApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBAC982735E46800A19ABA /* MenuApi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,8 +26,7 @@
 		2DDBAC902735C54400A19ABA /* SmoothieList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothieList.swift; sourceTree = "<group>"; };
 		2DDBAC922735C58600A19ABA /* SmoothieRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothieRow.swift; sourceTree = "<group>"; };
 		2DDBAC942735CBEA00A19ABA /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
-		2DDBAC962735DBC400A19ABA /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
-		2DDBAC982735E46800A19ABA /* Waiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Waiter.swift; sourceTree = "<group>"; };
+		2DDBAC982735E46800A19ABA /* MenuApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuApi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,10 +61,9 @@
 			children = (
 				2DDBAC7E2735C43B00A19ABA /* CafeApp.swift */,
 				2DDBAC8C2735C4CB00A19ABA /* Smoothie.swift */,
-				2DDBAC962735DBC400A19ABA /* Order.swift */,
 				2DDBAC902735C54400A19ABA /* SmoothieList.swift */,
 				2DDBAC922735C58600A19ABA /* SmoothieRow.swift */,
-				2DDBAC982735E46800A19ABA /* Waiter.swift */,
+				2DDBAC982735E46800A19ABA /* MenuApi.swift */,
 				2DDBAC942735CBEA00A19ABA /* MenuView.swift */,
 				2DDBAC822735C43D00A19ABA /* Assets.xcassets */,
 				2DDBAC842735C43D00A19ABA /* Preview Content */,
@@ -152,9 +149,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DDBAC972735DBC400A19ABA /* Order.swift in Sources */,
 				2DDBAC932735C58600A19ABA /* SmoothieRow.swift in Sources */,
-				2DDBAC992735E46800A19ABA /* Waiter.swift in Sources */,
+				2DDBAC992735E46800A19ABA /* MenuApi.swift in Sources */,
 				2DDBAC952735CBEA00A19ABA /* MenuView.swift in Sources */,
 				2DDBAC912735C54400A19ABA /* SmoothieList.swift in Sources */,
 				2DDBAC8D2735C4CB00A19ABA /* Smoothie.swift in Sources */,
